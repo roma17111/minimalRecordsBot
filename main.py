@@ -2,6 +2,7 @@ from postgresminrec import *
 from telebot import *
 from service import *
 from emailservice import *
+from validate_email import *
 
 bot = telebot.TeleBot("6134182063:AAFu9mpxZ5JFVgsbRH0X8sx4isnQN93GfvY")
 
@@ -79,8 +80,13 @@ def get_fio(message):
 def get_phone(message, fio):
     try:
         phone = message.text.strip()
-        bot.send_message(message.chat.id, "📧  Укажите email")
-        bot.register_next_step_handler(message, get_email, fio, phone)
+        if not validate_mobile(phone):
+            bot.send_message(message.chat.id, "❌❗⚠️ Вы указали некорректный номер телефона\n\n"
+                                              "☎️  Укажите телефон")
+            bot.register_next_step_handler(message, get_phone, fio)
+        else:
+            bot.send_message(message.chat.id, "📧  Укажите email")
+            bot.register_next_step_handler(message, get_email, fio, phone)
     except AttributeError:
         bot.send_message(message.chat.id, "❌❗⚠️ Введите только текст\n\n"
                                           "☎️  Укажите телефон")
@@ -89,9 +95,14 @@ def get_phone(message, fio):
 
 def get_email(message, fio, phone):
     try:
-        email = message.text.strip()
-        bot.send_message(message.chat.id, "🧾  Опишите услугу")
-        bot.register_next_step_handler(message, get_description, fio, phone, email)
+        if not validate_email(message.text):
+            bot.send_message(message.chat.id, "❌❗⚠️ Некорректный email адрес\n\n"
+                                              "📧  Введите email")
+            bot.register_next_step_handler(message, get_email, fio, phone)
+        else:
+            email = message.text.strip()
+            bot.send_message(message.chat.id, "🧾  Опишите услугу")
+            bot.register_next_step_handler(message, get_description, fio, phone, email)
     except AttributeError:
         bot.send_message(message.chat.id, "❌❗⚠️ Введите только текст\n\n"
                                           "📧  Введите email")
@@ -126,6 +137,14 @@ def get_site(message):
 def other(message):
     bot.reply_to(message, "🔥😊👍 Супер")
     bot.send_message(message.chat.id, "⚙️  Выберите действие ", reply_markup=get_replay_keyboard(message))
+
+
+def validate_mobile(value):
+    rule = re.compile(r'\-?\d+(\.\d{0,})?')
+    if not rule.search(value):
+        return False
+    else:
+        return True
 
 
 bot.polling(none_stop=True)
