@@ -5,6 +5,10 @@ from emailservice import *
 
 bot = telebot.TeleBot("6134182063:AAFu9mpxZ5JFVgsbRH0X8sx4isnQN93GfvY")
 
+info = "Наши контакты\n\n" \
+       "телефон- +7-916-157-11-31 " \
+       "Вероника\n email - romanze1706@gmail.com"
+
 
 @bot.message_handler(commands=["start"])
 def main(message):
@@ -26,7 +30,7 @@ def get_replay_keyboard():
     btn = types.KeyboardButton("Наш сайт", web_app=types.WebAppInfo("https://roma17111.github.io/index.html"))
     btn1 = types.KeyboardButton("Список пользователей")
     markup.row(btn, types.KeyboardButton("Заказать услугу"))
-    markup.row(btn1)
+    markup.row(btn1, types.KeyboardButton("Контакты"))
     return markup
 
 
@@ -37,36 +41,58 @@ def main(message):
     elif message.text == "Заказать услугу":
         bot.send_message(message.chat.id, "Представьтесь")
         bot.register_next_step_handler(message, get_fio)
+    elif message.text == "Контакты":
+        bot.send_message(message.chat.id, info)
     else:
-        bot.send_message(message.chat.id, "Вы ввели - " + message.text, )
+        bot.send_message(message.chat.id, "Выберите действие ", reply_markup=get_replay_keyboard())
 
 
 def get_fio(message):
-    fio = message.text.strip()
-    bot.send_message(message.chat.id, "Укажите телефон")
-    bot.register_next_step_handler(message, get_phone, fio)
+    try:
+        fio = message.text.strip()
+        bot.send_message(message.chat.id, "Укажите телефон")
+        bot.register_next_step_handler(message, get_phone, fio)
+    except AttributeError:
+        bot.send_message(message.chat.id, "Введите только текст\n\n"
+                                          "Представьтесь")
+        bot.register_next_step_handler(message, get_fio)
 
 
 def get_phone(message, fio):
-    phone = message.text.strip()
-    bot.send_message(message.chat.id, "Укажите email")
-    bot.register_next_step_handler(message, get_email, fio, phone)
+    try:
+        phone = message.text.strip()
+        bot.send_message(message.chat.id, "Укажите email")
+        bot.register_next_step_handler(message, get_email, fio, phone)
+    except AttributeError:
+        bot.send_message(message.chat.id, "Введите только текст\n\n"
+                                          "Укажите телефон")
+        bot.register_next_step_handler(message, get_phone, fio)
 
 
 def get_email(message, fio, phone):
-    email = message.text.strip()
-    bot.send_message(message.chat.id, "Опишите услугу")
-    bot.register_next_step_handler(message, get_description, fio, phone, email)
+    try:
+        email = message.text.strip()
+        bot.send_message(message.chat.id, "Опишите услугу")
+        bot.register_next_step_handler(message, get_description, fio, phone, email)
+    except AttributeError:
+        bot.send_message(message.chat.id, "Введите только текст\n\n"
+                                          "Введите email")
+        bot.register_next_step_handler(message, get_email, fio, phone)
 
 
 def get_description(message, fio, phone, email):
-    description = message.text.strip()
-    bot.send_message(message.chat.id, "Заявка на оказание услуги отправлена\n"
-                                      "с вами свяжутся в ближайшее время", reply_markup=get_replay_keyboard())
-    serv = Service(message.chat.id, fio, phone, email, description)
-    s = str(serv.get_info())
-    bot.send_message(message.chat.id, s)
-    send_email(s)
+    try:
+        description = message.text.strip()
+        bot.send_message(message.chat.id, "Заявка на оказание услуги отправлена\n"
+                                          "с вами свяжутся в ближайшее время", reply_markup=get_replay_keyboard())
+        serv = Service(message.chat.id, fio, phone, email, description)
+        s = str(serv.get_info())
+        bot.send_message(message.chat.id, s)
+        send_email(s)
+    except AttributeError:
+        bot.send_message(message.chat.id, "Введите только текст\n\n"
+                                          "Опишите услугу")
+        bot.register_next_step_handler(message, get_description, fio, phone, email)
 
 
 def get_site(message):
