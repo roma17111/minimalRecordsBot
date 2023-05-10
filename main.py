@@ -29,16 +29,17 @@ def main(message):
     bot.send_photo(message.chat.id, file,
                    message.chat.first_name + "." +
                    "<em> Добро пожаловать в домашнюю студию звукозаписи</em>\n"
-                   "<b>MinimalRecords</b>\n\n" + opportunities, parse_mode='html', reply_markup=get_replay_keyboard())
+                   "<b>MinimalRecords</b>\n\n" + opportunities, parse_mode='html', reply_markup=get_replay_keyboard(message))
 
 
-def get_replay_keyboard():
+def get_replay_keyboard(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn = types.KeyboardButton("Наш сайт", web_app=types.WebAppInfo("https://roma17111.github.io/index.html"))
-    btn1 = types.KeyboardButton("Список пользователей")
-    markup.row(btn, types.KeyboardButton("Заказать услугу"))
+    btn1 = types.KeyboardButton("Заказать услугу")
+    if is_user_admin(message.chat.id):
+        markup.row(types.KeyboardButton("Список пользователей"), types.KeyboardButton("Список заявок"))
     markup.row(btn1, types.KeyboardButton("Контакты"))
-    markup.row(types.KeyboardButton("Наши возможности"))
+    markup.row(btn, types.KeyboardButton("Наши возможности"))
     return markup
 
 
@@ -53,8 +54,10 @@ def main(message):
         bot.send_message(message.chat.id, info)
     elif message.text == "Наши возможности":
         bot.send_message(message.chat.id, opportunities, parse_mode='html')
+    elif message.text == "Список заявок":
+        bot.send_message(message.chat.id, get_all_services())
     else:
-        bot.send_message(message.chat.id, "Выберите действие ", reply_markup=get_replay_keyboard())
+        bot.send_message(message.chat.id, "Выберите действие ", reply_markup=get_replay_keyboard(message))
 
 
 def get_fio(message):
@@ -94,11 +97,13 @@ def get_description(message, fio, phone, email):
     try:
         description = message.text.strip()
         bot.send_message(message.chat.id, "Заявка на оказание услуги отправлена\n"
-                                          "с вами свяжутся в ближайшее время", reply_markup=get_replay_keyboard())
+                                          "с вами свяжутся в ближайшее время",
+                         reply_markup=get_replay_keyboard())
         serv = Service(message.chat.id, fio, phone, email, description)
         s = str(serv.get_info())
         bot.send_message(message.chat.id, s)
         send_email(s)
+        create_service(fio, phone, email, description)
     except AttributeError:
         bot.send_message(message.chat.id, "Введите только текст\n\n"
                                           "Опишите услугу")
