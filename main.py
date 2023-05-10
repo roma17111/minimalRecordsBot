@@ -9,6 +9,13 @@ info = "Наши контакты\n\n" \
        "телефон- +7-916-157-11-31 " \
        "Вероника\n email - romanze1706@gmail.com"
 
+opportunities = "Наши возможности \n\n" \
+                "<b>Аранжировка</b>\n" \
+                "<b>Сведение</b>\n" \
+                "<b>Мастеринг</b>\n" \
+                "<b>Обработка вокала</b>\n" \
+                "<b>Написание партий гитары/бас-гитары</b>\n"
+
 
 @bot.message_handler(commands=["start"])
 def main(message):
@@ -22,7 +29,7 @@ def main(message):
     bot.send_photo(message.chat.id, file,
                    message.chat.first_name + "." +
                    "<em> Добро пожаловать в домашнюю студию звукозаписи</em>\n"
-                   "<b>MinimalRecords</b>", parse_mode='html', reply_markup=get_replay_keyboard())
+                   "<b>MinimalRecords</b>\n\n" + opportunities, parse_mode='html', reply_markup=get_replay_keyboard())
 
 
 def get_replay_keyboard():
@@ -31,6 +38,7 @@ def get_replay_keyboard():
     btn1 = types.KeyboardButton("Список пользователей")
     markup.row(btn, types.KeyboardButton("Заказать услугу"))
     markup.row(btn1, types.KeyboardButton("Контакты"))
+    markup.row(types.KeyboardButton("Наши возможности"))
     return markup
 
 
@@ -43,6 +51,8 @@ def main(message):
         bot.register_next_step_handler(message, get_fio)
     elif message.text == "Контакты":
         bot.send_message(message.chat.id, info)
+    elif message.text == "Наши возможности":
+        bot.send_message(message.chat.id, opportunities, parse_mode='html')
     else:
         bot.send_message(message.chat.id, "Выберите действие ", reply_markup=get_replay_keyboard())
 
