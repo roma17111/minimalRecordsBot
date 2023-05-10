@@ -1,9 +1,12 @@
 FROM python:3.8
 # set work directory
-WORKDIR /usr/src/app/
+WORKDIR ./
 # copy project
-COPY . /usr/src/app/
+COPY ./ /.
+ADD ./Minrec.jpg ./Minrec.jpg
 # install dependencies
-RUN pip install --user telebot
+RUN pip install telebot
+RUN pip install psycopg2
+RUN pip install validate_email
 # run app
 CMD ["python", "main.py"]
