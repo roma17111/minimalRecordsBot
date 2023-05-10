@@ -13,6 +13,6 @@ class Service:
         self.description = description
 
     def get_info(self):
-        s = "Заявка на услугу:\n Чат id " + str(self.chat_id) + '\n' + "ФИО\n" + self.full_name +\
+        s = "Ваша заявка на услугу:\n Чат id " + str(self.chat_id) + '\n' + "ФИО\n" + self.full_name +\
             "\nНомер телефона \n" + self.phone_number + '\n' + "email\n" + self.email + "\nОписание услуги\n" + self.description
         return s

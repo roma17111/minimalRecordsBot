@@ -15,7 +15,7 @@ def get_all_users():
         print(len(users))
         info = "Список пользователей\n\n"
         for el in users:
-            info += f'Ник:  @{el[2]}\n  Имя:  {el[3]}\n  Фамилия:  {el[4]}\n ID {el[1]}\n'
+            info += f'🌐  Ник:  @{el[2]}\n  🤵  Имя:  {el[3]}\n 🧍🏽  Фамилия:  {el[4]}\n ID  {el[1]}\n'
         if connection:
             cursor.close()
             connection.close()
@@ -91,8 +91,8 @@ def get_all_services():
         s = cursor.fetchall()
         info = "Список заявок на оказание услуги\n\n"
         for el in s:
-            info += f'ФИО:  {el[1]}\n  Телефон:  {el[2]}\n ' \
-                    f' email:  {el[3]}\n описание услуги: {el[4]} \n'
+            info += f'🧑🏻 ФИО:  {el[1]}\n  📱  Телефон:  {el[2]}\n ' \
+                    f'📧  email:  {el[3]}\n 📑  описание услуги: {el[4]} \n'
         if connection:
             cursor.close()
             connection.close()
