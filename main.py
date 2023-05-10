@@ -7,7 +7,7 @@ bot = telebot.TeleBot("6134182063:AAFu9mpxZ5JFVgsbRH0X8sx4isnQN93GfvY")
 
 info = "Наши контакты\n" \
        "😎🤙🏻👋🏻🤝🏻\n\n" \
-       "☎   телефон- +7-916-157-11-31 " \
+       "☎   телефон- +7-916-157-11-31\n " \
        "👔   Вероника\n" \
        "✉   email - romanze1706@gmail.com"
 
@@ -33,7 +33,8 @@ def main(message):
                    message.chat.first_name + "." +
                    "😐👉🚪   <em> Добро пожаловать в домашнюю студию звукозаписи</em>\n"
                    "🖐 🙌 👋🏼 🔊 🔥\n"
-                   "🎤📀💻 <b>MinimalRecords</b>\n\n" + opportunities, parse_mode='html', reply_markup=get_replay_keyboard(message))
+                   "🎤📀💻 <b>MinimalRecords</b>\n\n" + opportunities, parse_mode='html',
+                   reply_markup=get_replay_keyboard(message))
 
 
 def get_replay_keyboard(message):
@@ -42,8 +43,8 @@ def get_replay_keyboard(message):
     btn1 = types.KeyboardButton("📱 Заказать услугу")
     if is_user_admin(message.chat.id):
         markup.row(types.KeyboardButton("🧑🏻‍💻 Список пользователей"), types.KeyboardButton("🧰 Список заявок"))
-    markup.row(btn1, types.KeyboardButton("🗨️ Контакты"))
-    markup.row(btn, types.KeyboardButton("📣 Наши возможности"))
+    markup.row(types.KeyboardButton("📣 Наши возможности"), btn1)
+    markup.row(btn, types.KeyboardButton("🗨️ Контакты"))
     return markup
 
 
@@ -61,7 +62,7 @@ def main(message):
     elif message.text == "🧰 Список заявок":
         bot.send_message(message.chat.id, get_all_services())
     else:
-        bot.send_message(message.chat.id, "Выберите действие ", reply_markup=get_replay_keyboard(message))
+        bot.send_message(message.chat.id, "⚙️  Выберите действие ", reply_markup=get_replay_keyboard(message))
 
 
 def get_fio(message):
@@ -119,6 +120,12 @@ def get_site(message):
     site = types.InlineKeyboardButton("тык", url="https://roma17111.github.io/index.html")
     markup.row(site)
     bot.send_message(message.chat.id, "Перейти на сайт", reply_markup=markup)
+
+
+@bot.message_handler(content_types=['photo', 'audio', 'video'])
+def other(message):
+    bot.reply_to(message, "🔥😊👍 Супер")
+    bot.send_message(message.chat.id, "⚙️  Выберите действие ", reply_markup=get_replay_keyboard(message))
 
 
 bot.polling(none_stop=True)
