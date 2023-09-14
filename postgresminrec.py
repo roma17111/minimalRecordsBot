@@ -5,10 +5,10 @@ from psycopg2 import Error
 def get_all_users():
     connection = psycopg2.connect(user="user",
                                   # пароль, который указали при установке PostgreSQL
-                                  password="12345",
-                                  host="asha.webtm.ru",
-                                  port="5432",
-                                  database="minrec")
+                                  password=,
+                                  host=,
+                                  port=,
+                                  database=)
     with connection.cursor() as cursor:
         cursor.execute("select * from users")
         users = cursor.fetchall()
