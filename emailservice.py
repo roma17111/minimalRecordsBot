@@ -9,6 +9,6 @@ def send_email(text):
     msg['From'] = 'botsuperlager@gmail.com'
     msg['To'] = 'romanze1706@gmail.com'
     smtp_obj = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    smtp_obj.login('botsuperlager@gmail.com', 'zcvdytjovtdjzuxk')
+    smtp_obj.login()
     smtp_obj.send_message(msg)
     smtp_obj.quit()
